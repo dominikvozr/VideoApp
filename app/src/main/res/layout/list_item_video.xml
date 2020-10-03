@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools">
+
+	<data>
+
+		<variable
+			name="video"
+			type="com.example.videoApp.domain.Video" />
+		<variable
+			name="callback"
+			type="com.example.videoApp.recyclerView.PlayerStateCallback" />
+		<variable
+			name="index"
+			type="int" />
+
+	</data>
+
+
+
+	<FrameLayout
+		android:id="@+id/root"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:keepScreenOn="true">
+
+		<com.google.android.exoplayer2.ui.PlayerView
+			android:id="@+id/player_view"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			app:video_url="@{video.uri}"
+			app:on_state_change="@{callback}"
+			app:item_index="@{index}"
+			/>
+
+	</FrameLayout>
+</layout>

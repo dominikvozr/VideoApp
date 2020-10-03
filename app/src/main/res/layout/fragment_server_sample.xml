@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools">
+
+	<data>
+
+		<variable
+			name="viewModel"
+			type="com.example.videoApp.viewModels.ServerSampleViewModel" />
+	</data>
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+
+		<Button
+			android:id="@+id/mp3"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="150dp"
+			android:text="MP3"
+			app:layout_constraintBottom_toTopOf="@+id/MP4"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<Button
+			android:id="@+id/MP4"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="MP4"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<Button
+			android:id="@+id/HLS"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginBottom="150dp"
+			android:text="HLS"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/MP4"
+			android:onClick="@{() -> viewModel.hlsClicked()}"
+			/>
+
+
+		<FrameLayout
+			android:id="@+id/player_view_container"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:keepScreenOn="true"
+			android:visibility="gone">
+
+
+			<com.google.android.exoplayer2.ui.PlayerView
+				android:id="@+id/player_view"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent">
+
+			</com.google.android.exoplayer2.ui.PlayerView>
+
+			<ImageButton
+				android:id="@+id/close_btn"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="16dp"
+				android:layout_marginTop="16dp"
+				android:onClick="@{() -> viewModel.closeClicked()}"
+				app:layout_constraintTop_toTopOf="parent"
+				app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
+
+		</FrameLayout>
+	</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

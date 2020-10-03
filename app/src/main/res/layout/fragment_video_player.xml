@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools">
+
+	<data>
+
+		<variable
+			name="videoPlayerViewModel"
+			type="com.example.videoApp.viewModels.VideoPlayerViewModel" />
+	</data>
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+
+		<com.google.android.material.floatingactionbutton.FloatingActionButton
+			android:id="@+id/floating_action_save_button"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="bottom|right"
+			android:layout_margin="16dp"
+			android:layout_marginEnd="15dp"
+			android:layout_marginBottom="15dp"
+			android:contentDescription="fab_content_desc"
+			app:backgroundTint="#A3A3A3"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:srcCompat="@android:drawable/stat_sys_download" />
+
+		<com.google.android.material.floatingactionbutton.FloatingActionButton
+			android:id="@+id/floating_action_delete_button"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="bottom|right"
+			android:layout_margin="16dp"
+			android:layout_marginEnd="5dp"
+			android:layout_marginBottom="15dp"
+			android:contentDescription="fab_content_desc"
+			app:backgroundTint="#A3A3A3"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toStartOf="@+id/floating_action_save_button"
+			app:srcCompat="@android:drawable/ic_menu_delete" />
+
+		<com.google.android.exoplayer2.ui.PlayerView
+			android:id="@+id/player_view"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent">
+
+		</com.google.android.exoplayer2.ui.PlayerView>
+	</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/navigation"
+	app:startDestination="@id/mainFragment">
+
+	<fragment
+		android:id="@+id/mainFragment"
+		android:name="com.example.videoApp.fragments.MainFragment"
+		android:label="fragment_main"
+		tools:layout="@layout/fragment_main" >
+		<action
+			android:id="@+id/action_mainFragment_to_cameraFragment"
+			app:destination="@id/cameraFragment" />
+	</fragment>
+	<fragment
+		android:id="@+id/videoPlayerFragment"
+		android:name="com.example.videoApp.fragments.VideoPlayerFragment"
+		android:label="fragment_video_player"
+		tools:layout="@layout/fragment_video_player" >
+		<argument android:name="videoPath"
+			app:argType="string" />
+		<action
+			android:id="@+id/action_videoPlayerFragment_to_mainFragment"
+			app:destination="@id/mainFragment"
+			app:popUpTo="@id/mainFragment" />
+		<action
+			android:id="@+id/action_videoPlayerFragment_to_cameraFragment"
+			app:destination="@id/cameraFragment"
+			app:popUpTo="@id/mainFragment" />
+	</fragment>
+	<fragment
+		android:id="@+id/cameraFragment"
+		android:name="com.example.videoApp.fragments.CameraFragment"
+		android:label="CameraFragment" >
+		<action
+			android:id="@+id/action_cameraFragment_to_videoPlayerFragment"
+			app:destination="@id/videoPlayerFragment"
+			app:popUpToInclusive="false" />
+	</fragment>
+</navigation>
