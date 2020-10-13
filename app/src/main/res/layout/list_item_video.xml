@@ -11,7 +11,7 @@
 			type="com.example.videoApp.domain.Video" />
 		<variable
 			name="callback"
-			type="com.example.videoApp.recyclerView.PlayerStateCallback" />
+			type="com.example.videoApp.utils.PlayerStateCallback" />
 		<variable
 			name="index"
 			type="int" />

@@ -14,9 +14,9 @@ import androidx.recyclerview.widget.SnapHelper
 import com.example.videoApp.R
 import com.example.videoApp.databinding.FragmentMainBinding
 import com.example.videoApp.domain.Video
-import com.example.videoApp.recyclerView.PlayerViewAdapter
-import com.example.videoApp.recyclerView.RecyclerViewScrollListener
-import com.example.videoApp.recyclerView.VideoAdapter
+import com.example.videoApp.utils.PlayerViewAdapter
+import com.example.videoApp.utils.RecyclerViewScrollListener
+import com.example.videoApp.utils.VideoAdapter
 import com.example.videoApp.viewModels.MainViewModel
 
 class MainFragment : Fragment() {

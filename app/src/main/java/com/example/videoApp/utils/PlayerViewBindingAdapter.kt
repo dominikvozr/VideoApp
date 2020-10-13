@@ -1,4 +1,4 @@
-package com.example.videoApp.recyclerView
+package com.example.videoApp.utils
 
 import android.net.Uri
 import android.widget.Toast

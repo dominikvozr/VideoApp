@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
-import com.example.videoApp.recyclerView.CameraListener
+import com.example.videoApp.utils.CameraListener
 import com.example.videoApp.viewModels.CameraViewModel
 import com.example.videoApp.databinding.FragmentCameraBinding
 import com.otaliastudios.cameraview.controls.Facing

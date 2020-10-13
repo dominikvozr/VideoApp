@@ -1,4 +1,4 @@
-package com.example.videoApp.recyclerView
+package com.example.videoApp.utils
 
 import android.util.Log
 import com.example.videoApp.viewModels.CameraViewModel
@@ -6,7 +6,7 @@ import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraOptions
 import com.otaliastudios.cameraview.VideoResult
 
-class CameraListener(
+class InternetVideoListener(
 	private val cameraViewModel: CameraViewModel
 ) : CameraListener() {
 

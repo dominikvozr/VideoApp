@@ -13,6 +13,9 @@
 		<action
 			android:id="@+id/action_mainFragment_to_cameraFragment"
 			app:destination="@id/cameraFragment" />
+		<action
+			android:id="@+id/action_mainFragment_to_serverSampleFragment"
+			app:destination="@id/serverSampleFragment" />
 	</fragment>
 	<fragment
 		android:id="@+id/videoPlayerFragment"
@@ -39,4 +42,8 @@
 			app:destination="@id/videoPlayerFragment"
 			app:popUpToInclusive="false" />
 	</fragment>
+	<fragment
+		android:id="@+id/serverSampleFragment"
+		android:name="com.example.videoApp.fragments.ServerSampleFragment"
+		android:label="ServerSampleFragment" />
 </navigation>

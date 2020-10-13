@@ -1,4 +1,4 @@
-package com.example.videoApp.recyclerView
+package com.example.videoApp.utils
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView

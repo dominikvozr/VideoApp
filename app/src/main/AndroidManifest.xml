@@ -7,6 +7,8 @@
 	<uses-permission android:name="android.permission.RECORD_AUDIO" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
 	<uses-feature
 		android:name="android.hardware.camera"
@@ -20,7 +22,7 @@
 		android:requestLegacyExternalStorage="true"
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
-		android:theme="@style/Theme.AppCompat">
+		android:theme="@style/Theme.AppCompat.NoActionBar">
 		<activity android:name="com.example.videoApp.MainActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
@@ -28,6 +30,15 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
+
+		<service android:name=".utils.VideoAppDownloadService"
+			android:exported="false">
+			<!-- This is needed for Scheduler -->
+			<intent-filter>
+				<action android:name="com.google.android.exoplayer.downloadService.action.RESTART"/>
+				<category android:name="android.intent.category.DEFAULT"/>
+			</intent-filter>
+		</service>
 	</application>
 
 </manifest>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:id="@+id/menu">
+	<item android:id="@+id/action_my_videos"
+		android:title="Moje Videá"
+		app:showAsAction="never"/>
+	<item android:id="@+id/action_server_videos"
+		android:title="Videá na internete"
+		app:showAsAction="never"/>
+</menu>

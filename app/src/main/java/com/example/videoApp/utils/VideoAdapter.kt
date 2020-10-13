@@ -1,4 +1,4 @@
-package com.example.videoApp.recyclerView
+package com.example.videoApp.utils
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.videoApp.domain.Video
 import com.example.videoApp.databinding.ListItemVideoBinding
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
 
 class VideoAdapter(private val context: Context, private var videos: ArrayList<Video>) : RecyclerView.Adapter<VideoAdapter.ViewHolder>(),
 	PlayerStateCallback {

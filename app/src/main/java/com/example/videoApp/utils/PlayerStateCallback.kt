@@ -1,4 +1,4 @@
-package com.example.videoApp.recyclerView
+package com.example.videoApp.utils
 
 import com.google.android.exoplayer2.Player
 
