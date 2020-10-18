@@ -9,6 +9,8 @@
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
 	<uses-feature
 		android:name="android.hardware.camera"
@@ -32,7 +34,8 @@
 		</activity>
 
 		<service android:name=".utils.VideoAppDownloadService"
-			android:exported="false">
+			android:permission="android.permission.BIND_JOB_SERVICE"
+			android:exported="true" >
 			<!-- This is needed for Scheduler -->
 			<intent-filter>
 				<action android:name="com.google.android.exoplayer.downloadService.action.RESTART"/>
