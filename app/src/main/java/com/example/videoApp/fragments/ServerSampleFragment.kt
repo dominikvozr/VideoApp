@@ -30,7 +30,10 @@ import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
 import com.google.android.exoplayer2.source.MediaSourceFactory
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.hls.DefaultHlsExtractorFactory
+import com.google.android.exoplayer2.source.hls.HlsDataSourceFactory
+import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
+import com.google.android.exoplayer2.source.hls.playlist.HlsMediaPlaylist
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
@@ -71,6 +74,8 @@ class ServerSampleFragment : Fragment() {
 		viewModel.dataPath.observe(this, Observer {
 
 			if (it === "HLS" || it === "MP3" || it === "MP4") {
+				if (it === "HLS") binding.hlsText.visibility = View.VISIBLE
+				else binding.hlsText.visibility = View.GONE
 				setPlayer()
 				binding.playerViewContainer.visibility = View.VISIBLE
 				binding.buttonsContainer.visibility = View.GONE
@@ -90,7 +95,6 @@ class ServerSampleFragment : Fragment() {
 				.setUpstreamDataSourceFactory(
 					DemoUtil.getHttpDataSourceFactory(context!!)
 				)
-				.setCacheWriteDataSinkFactory(null) // Disable writing.
 		}
 
 		player = SimpleExoPlayer.Builder(context!!)
@@ -100,15 +104,17 @@ class ServerSampleFragment : Fragment() {
 			.build()
 		binding.playerView.player = player
 
+
 		when(viewModel.dataPath.value) {
 			"HLS" -> {
 				val downloadHelper = DownloadHelper.forMediaItem(
 					context!!,
 					MediaItem.fromUri(viewModel.hlsPath.value!!.toUri()),
 					DefaultRenderersFactory(context!!),
-					DemoUtil.getDataSourceFactory(context!!)
+					cacheDataSourceFactory
 				)
 				downloadHelper.prepare(DownloadHelperCallback())
+
 			}
 			"MP3" -> {
 				val downloadRequest = DownloadRequest.Builder(
@@ -145,38 +151,6 @@ class ServerSampleFragment : Fragment() {
 		}
 	}
 
-	/*private fun getHlsMediaSource(): HlsMediaSource {
-		// Create a data source factory.
-		val dataSourceFactory: DataSource.Factory = DefaultHttpDataSourceFactory()
-
-		val defaultHlsExtractorFactory =
-			DefaultHlsExtractorFactory(
-				DefaultTsPayloadReaderFactory.FLAG_ALLOW_NON_IDR_KEYFRAMES,
-				false
-			)
-		// Create a HLS media source pointing to a playlist uri.
-		return HlsMediaSource.Factory(dataSourceFactory)
-			.setExtractorFactory(defaultHlsExtractorFactory)
-			.setAllowChunklessPreparation(true)
-			.createMediaSource(MediaItem.fromUri(viewModel.hlsPath.value!!.toUri()))
-	}
-
-	private fun getMp4MediaSource(): ProgressiveMediaSource {
-		val dataSourceFactory: DataSource.Factory = DefaultHttpDataSourceFactory()
-		// This is the MediaSource representing the media to be played.
-		return ProgressiveMediaSource.Factory(dataSourceFactory)
-			.createMediaSource(MediaItem.fromUri(viewModel.mp4Path.value!!.toUri()))
-	}
-
-	private fun getMp3MediaSource(): ProgressiveMediaSource {
-		val dataSourceFactory: DataSource.Factory = DefaultDataSourceFactory(
-			context!!,
-			Util.getUserAgent(context!!, "VideoApp")
-		)
-		// This is the MediaSource representing the media to be played.
-		return ProgressiveMediaSource.Factory(dataSourceFactory)
-			.createMediaSource(MediaItem.fromUri(viewModel.mp3Path.value!!.toUri()))
-	}*/
 
 	private fun setPlayer() {
 		initializePlayer()
@@ -258,32 +232,60 @@ class ServerSampleFragment : Fragment() {
 						if(shouldDownload(track)) {
 							trackList.add(StreamKey(i, j, k))
 						}
+
 					}
 				}
 			}
 
+
 			var downloadRequest = helper.getDownloadRequest(ByteArray(trackList.size))
 
-			player.setMediaItem(downloadRequest.toMediaItem())
+			val mediaItem = downloadRequest.toMediaItem()
 
-			DownloadService.sendAddDownload(
-				context!!,
-				VideoAppDownloadService::class.java,
-				downloadRequest,
-				false
-			)
+			player.setMediaItem(mediaItem)
+
+			//helper.getMappedTrackInfo().
+
+			if (trackList.isNotEmpty()) {
+				DownloadService.sendAddDownload(
+					context!!,
+					VideoAppDownloadService::class.java,
+					downloadRequest,
+					false
+				)
+			}
+
+
+
+
+			setupTimes(downloadRequest.streamKeys)
 			helper.release()
+		}
+
+		private fun setupTimes(trackList: List<StreamKey>) {
+			val duration: Long = 35000
+			for (x in 0..duration step 5000) {
+				player?.createMessage { _: Int, _: Any? -> videoChanged(x) }
+					?.setPosition(x)?.setDeleteAfterDelivery(false)?.send()
+			}
+		}
+
+		private fun videoChanged(x: Long) {
+			val str = "video text sec. $x"
+			Log.i("ServerSampleFragment", "video text sec. $x")
+			viewModel.postHlsText(str)
+
 		}
 
 		private fun shouldDownload(track: Format): Boolean {
 			return track.height != 240 && track.sampleMimeType.equals("video/avc", true);
 		}
 
+
 		override fun onPrepareError(helper: DownloadHelper, e: IOException) {
 			Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show()
 			Log.e("ServerSampleFragment", e.toString())
 		}
-
 	}
 
 }

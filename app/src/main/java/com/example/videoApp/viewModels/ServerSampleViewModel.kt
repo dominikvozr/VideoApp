@@ -22,8 +22,12 @@ class ServerSampleViewModel : ViewModel() {
 	val mp3Path: LiveData<String>
 		get() = _mp3Path
 
+	private val _hlsText = MutableLiveData<String>()
+	val hlsText: LiveData<String>
+		get() = _hlsText
 	init {
-		_hlsPath.value = "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8"
+		_hlsText.value = ""
+		_hlsPath.value = "https://apidev2.opinyour.com/merged/5674894D-5A98-4C46-A541-E6CE666382C5/2324E9A4-65F2-4E8C-8441-17F1A85D00F5/merged.m3u8"
 		_mp4Path.value = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
 		_mp3Path.value = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
 	}
@@ -42,5 +46,9 @@ class ServerSampleViewModel : ViewModel() {
 
 	fun closeClicked() {
 		_dataPath.value = "";
+	}
+
+	fun postHlsText(text: String) {
+		_hlsText.postValue(text)
 	}
 }
