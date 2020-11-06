@@ -13,9 +13,6 @@
 		<action
 			android:id="@+id/action_mainFragment_to_cameraFragment"
 			app:destination="@id/cameraFragment" />
-		<action
-			android:id="@+id/action_mainFragment_to_serverSampleFragment"
-			app:destination="@id/serverSampleFragment" />
 	</fragment>
 	<fragment
 		android:id="@+id/videoPlayerFragment"

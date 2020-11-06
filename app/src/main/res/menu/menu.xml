@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:id="@+id/menu">
-	<item android:id="@+id/action_my_videos"
+	<item android:id="@+id/mainFragment"
 		android:title="Moje Videá"
 		app:showAsAction="never"/>
-	<item android:id="@+id/action_server_videos"
+	<item android:id="@+id/serverSampleFragment"
 		android:title="Videá na internete"
 		app:showAsAction="never"/>
 </menu>

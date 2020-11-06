@@ -1,14 +1,14 @@
 package com.example.videoApp.fragments
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.SnapHelper
 import com.example.videoApp.R
@@ -34,7 +34,7 @@ class MainFragment : Fragment() {
 		binding = DataBindingUtil.inflate(inflater, R.layout.fragment_main, container, false)
 		binding.viewModel = mainViewModel
 		binding.lifecycleOwner = this
-
+		setHasOptionsMenu(true)
         return binding.root
     }
 
@@ -90,4 +90,14 @@ class MainFragment : Fragment() {
 		PlayerViewAdapter.releaseAllPlayers()
 	}
 
+	override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+		super.onCreateOptionsMenu(menu, inflater)
+		inflater?.inflate(R.menu.menu,  menu)
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+		return NavigationUI.onNavDestinationSelected(
+			item!!,
+			view!!.findNavController()) || super.onOptionsItemSelected(item)
+	}
 }

@@ -2,15 +2,15 @@ package com.example.videoApp.fragments
 
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.ui.NavigationUI
 import com.example.videoApp.R
 import com.example.videoApp.databinding.FragmentVideoPlayerBinding
 import com.example.videoApp.viewModels.VideoPlayerViewModel
@@ -83,14 +83,25 @@ class VideoPlayerFragment : Fragment() {
 				videoPlayerViewModel.navigationCompleted()
 			}
 		})
+
+		setHasOptionsMenu(true)
         return binding.root
     }
-
-
 
 	override fun onDestroyView() {
 		super.onDestroyView()
 		player.stop()
 		player.release()
+	}
+
+	override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+		super.onCreateOptionsMenu(menu, inflater)
+		inflater?.inflate(R.menu.menu,  menu)
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+		return NavigationUI.onNavDestinationSelected(
+			item!!,
+			view!!.findNavController()) || super.onOptionsItemSelected(item)
 	}
 }

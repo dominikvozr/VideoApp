@@ -2,13 +2,14 @@ package com.example.videoApp.fragments
 
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
+import com.example.videoApp.R
 import com.example.videoApp.utils.CameraListener
 import com.example.videoApp.viewModels.CameraViewModel
 import com.example.videoApp.databinding.FragmentCameraBinding
@@ -82,7 +83,7 @@ class CameraFragment : Fragment() {
 			}
 		})
 
-
+		setHasOptionsMenu(true)
 		return binding.root
 	}
 
@@ -90,5 +91,16 @@ class CameraFragment : Fragment() {
 	override fun onDestroyView() {
 		camera.close()
 		super.onDestroyView()
+	}
+
+	override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+		super.onCreateOptionsMenu(menu, inflater)
+		inflater?.inflate(R.menu.menu,  menu)
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+		return NavigationUI.onNavDestinationSelected(
+			item!!,
+			view!!.findNavController()) || super.onOptionsItemSelected(item)
 	}
 }

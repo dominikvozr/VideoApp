@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
 		return navController.navigateUp()
 	}
 
-	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+	/*override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
 		R.id.action_my_videos -> {
 			navController.navigate(VideoPlayerFragmentDirections.actionVideoPlayerFragmentToMainFragment())
 			true
@@ -42,11 +42,11 @@ class MainActivity : AppCompatActivity() {
 		else -> {
 			super.onOptionsItemSelected(item)
 		}
-	}
+	}*/
 
-	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+	/*override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		menuInflater.inflate(R.menu.menu, menu)
 		return true
-	}
+	}*/
 }

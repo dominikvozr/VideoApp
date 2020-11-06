@@ -1,46 +1,19 @@
 package com.example.videoApp.fragments
 
-import android.app.DownloadManager.Request.NETWORK_WIFI
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.net.toUri
+import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import com.example.videoApp.R
 import com.example.videoApp.databinding.FragmentServerSampleBinding
-import com.example.videoApp.utils.DemoUtil
-import com.example.videoApp.utils.VideoAppDownloadService
+import com.example.videoApp.utils.serverPlayerUtils.HlsVideoPlayer
+import com.example.videoApp.utils.serverPlayerUtils.ProgressiveVideoPlayer
+import com.example.videoApp.utils.serverPlayerUtils.ServerVideoPlayer
 import com.example.videoApp.viewModels.ServerSampleViewModel
-import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.extractor.ts.DefaultTsPayloadReaderFactory
-import com.google.android.exoplayer2.offline.DownloadHelper
-import com.google.android.exoplayer2.offline.DownloadRequest
-import com.google.android.exoplayer2.offline.DownloadService
-import com.google.android.exoplayer2.offline.StreamKey
-import com.google.android.exoplayer2.scheduler.Requirements
-import com.google.android.exoplayer2.scheduler.Requirements.NETWORK
-import com.google.android.exoplayer2.source.BehindLiveWindowException
-import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
-import com.google.android.exoplayer2.source.MediaSourceFactory
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.source.hls.DefaultHlsExtractorFactory
-import com.google.android.exoplayer2.source.hls.HlsDataSourceFactory
-import com.google.android.exoplayer2.source.hls.HlsManifest
-import com.google.android.exoplayer2.source.hls.HlsMediaSource
-import com.google.android.exoplayer2.source.hls.playlist.HlsMediaPlaylist
-import com.google.android.exoplayer2.upstream.DataSource
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
-import com.google.android.exoplayer2.upstream.cache.CacheDataSource
-import com.google.android.exoplayer2.util.Util
-import java.io.IOException
-import java.util.function.UnaryOperator
 
 
 class ServerSampleFragment : Fragment() {
@@ -50,8 +23,7 @@ class ServerSampleFragment : Fragment() {
 	private val viewModel: ServerSampleViewModel by lazy {
 		ViewModelProviders.of(this).get(ServerSampleViewModel::class.java)
 	}
-
-	lateinit var player: SimpleExoPlayer
+	private var serverVideoPlayer: ServerVideoPlayer? = null
 
 	override fun onCreateView(
 		inflater: LayoutInflater, container: ViewGroup?,
@@ -65,227 +37,94 @@ class ServerSampleFragment : Fragment() {
 		)
 		binding.viewModel = viewModel
 		binding.lifecycleOwner = this
-
+		setHasOptionsMenu(true)
 		return binding.root
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		viewModel.dataPath.observe(this, Observer {
+		serverVideoPlayer?.let {
+			it.onPlayerResume()
+		}
 
-			if (it === "HLS" || it === "MP3" || it === "MP4") {
-				if (it === "HLS") binding.hlsText.visibility = View.VISIBLE
-				else binding.hlsText.visibility = View.GONE
-				setPlayer()
-				binding.playerViewContainer.visibility = View.VISIBLE
-				binding.buttonsContainer.visibility = View.GONE
-			} else if (it === "") {
-				releasePlayer()
-				binding.playerViewContainer.visibility = View.GONE
-				binding.buttonsContainer.visibility = View.VISIBLE
-			}
+		viewModel.dataPath.observe(this, Observer {
+			sourceDecision(it)
 		})
 	}
 
-
-	private fun initializePlayer() {
-		val cacheDataSourceFactory: DataSource.Factory? = DemoUtil.getDownloadCache(context!!)?.let {
-			CacheDataSource.Factory()
-				.setCache(it)
-				.setUpstreamDataSourceFactory(
-					DemoUtil.getHttpDataSourceFactory(context!!)
-				)
-		}
-
-		player = SimpleExoPlayer.Builder(context!!)
-			.setMediaSourceFactory(
-				DefaultMediaSourceFactory(cacheDataSourceFactory!!)
-			)
-			.build()
-		binding.playerView.player = player
-
-
-		when(viewModel.dataPath.value) {
+	private fun sourceDecision(type: String) {
+		when(type) {
 			"HLS" -> {
-				val downloadHelper = DownloadHelper.forMediaItem(
-					context!!,
-					MediaItem.fromUri(viewModel.hlsPath.value!!.toUri()),
-					DefaultRenderersFactory(context!!),
-					cacheDataSourceFactory
-				)
-				downloadHelper.prepare(DownloadHelperCallback())
-
+				binding.hlsText.visibility = View.VISIBLE
+				serverVideoPlayer = HlsVideoPlayer(binding, viewModel, context)
+				serverVideoPlayer!!.setPlayer()
+				binding.playerViewContainer.visibility = View.VISIBLE
+				binding.buttonsContainer.visibility = View.GONE
 			}
 			"MP3" -> {
-				val downloadRequest = DownloadRequest.Builder(
-					viewModel.mp3Path.value!!,
-					viewModel.mp3Path.value!!.toUri()
-				).build()
-
-				player.setMediaItem(downloadRequest.toMediaItem())
-
-				DownloadService.sendAddDownload(
-					context!!,
-					VideoAppDownloadService::class.java,
-					downloadRequest,
-					false
-				)
+				binding.hlsText.visibility = View.GONE
+				serverVideoPlayer = ProgressiveVideoPlayer(binding, viewModel, context, viewModel.mp3Path.value)
+				serverVideoPlayer!!.setPlayer()
+				binding.playerViewContainer.visibility = View.VISIBLE
+				binding.buttonsContainer.visibility = View.GONE
 			}
 			"MP4" -> {
-				val downloadRequest = DownloadRequest.Builder(
-					viewModel.mp4Path.value!!,
-					viewModel.mp4Path.value!!.toUri()
-				).build()
-
-				player.setMediaItem(downloadRequest.toMediaItem())
-
-				DownloadService.sendAddDownload(
-					context!!,
-					VideoAppDownloadService::class.java,
-					downloadRequest,
-					false
-				)
-
+				binding.hlsText.visibility = View.GONE
+				serverVideoPlayer = ProgressiveVideoPlayer(binding, viewModel, context, viewModel.mp4Path.value)
+				serverVideoPlayer!!.setPlayer()
+				binding.playerViewContainer.visibility = View.VISIBLE
+				binding.buttonsContainer.visibility = View.GONE
 			}
-
+			"" -> {
+				serverVideoPlayer!!.releasePlayer()
+				binding.playerViewContainer.visibility = View.GONE
+				binding.buttonsContainer.visibility = View.VISIBLE
+			}
 		}
 	}
-
-
-	private fun setPlayer() {
-		initializePlayer()
-		// Prepare the player.
-
-		// Set the media source to be played.
-		/*when(viewModel.dataPath.value) {
-			"HLS" -> player.setMediaSource(getHlsMediaSource())
-			"MP4" -> player.setMediaSource(getMp4MediaSource())
-			"MP3" -> player.setMediaSource(getMp3MediaSource())
-
-		}*/
-
-		player.prepare()
-
-		player.playWhenReady = true
-	}
-
-	private fun releasePlayer() {
-		player.release()
-	}
-
 	override fun onStart() {
 		super.onStart()
-			initializePlayer()
+		serverVideoPlayer?.let {
+			it.setPlayer()
+		}
 	}
 
 	override fun onResume() {
 		super.onResume()
-		player.playWhenReady = true
+		serverVideoPlayer?.let {
+			it.setPlayWhenReady(true)
+		}
 	}
 
 	override fun onPause() {
 		super.onPause()
-		player.playWhenReady = false
+		serverVideoPlayer?.let {
+			it.setPlayWhenReady(false)
+		}
 	}
 
 	override fun onStop() {
 		super.onStop()
-		player.playWhenReady = false
+		serverVideoPlayer?.let {
+			it.setPlayWhenReady(false)
+		}
 	}
 
 	override fun onDestroy() {
 		super.onDestroy()
-		releasePlayer()
-	}
-
-	fun onPlayerError(e: ExoPlaybackException) {
-		if (isBehindLiveWindow(e)) {
-			// Re-initialize player at the live edge.
-		} else {
-			// Handle other errors
+		serverVideoPlayer?.let {
+			it.releasePlayer()
 		}
 	}
 
-	private fun isBehindLiveWindow(e: ExoPlaybackException): Boolean {
-		if (e.type !== ExoPlaybackException.TYPE_SOURCE) {
-			return false
-		}
-		var cause: Throwable? = e.getSourceException()
-		while (cause != null) {
-			if (cause is BehindLiveWindowException) {
-				return true
-			}
-			cause = cause.cause
-		}
-		return false
+	override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+		super.onCreateOptionsMenu(menu, inflater)
+		inflater?.inflate(R.menu.menu,  menu)
 	}
 
-	private inner class DownloadHelperCallback() : DownloadHelper.Callback {
-		override fun onPrepared(helper: DownloadHelper) {
-			val trackList = arrayListOf<StreamKey>()
-			for (i in 0 until helper.periodCount) {
-				val trackGroups = helper.getTrackGroups(i)
-				for (j in 0 until trackGroups.length) {
-					val trackGroup = trackGroups.get(j)
-					for (k in 0 until trackGroup.length) {
-						val track = trackGroup.getFormat(k)
-						if(shouldDownload(track)) {
-							trackList.add(StreamKey(i, j, k))
-						}
-
-					}
-				}
-			}
-
-
-			var downloadRequest = helper.getDownloadRequest(ByteArray(trackList.size))
-
-			val mediaItem = downloadRequest.toMediaItem()
-
-			player.setMediaItem(mediaItem)
-
-			//helper.getMappedTrackInfo().
-
-			if (trackList.isNotEmpty()) {
-				DownloadService.sendAddDownload(
-					context!!,
-					VideoAppDownloadService::class.java,
-					downloadRequest,
-					false
-				)
-			}
-
-
-
-
-			setupTimes(downloadRequest.streamKeys)
-			helper.release()
-		}
-
-		private fun setupTimes(trackList: List<StreamKey>) {
-			val duration: Long = 35000
-			for (x in 0..duration step 5000) {
-				player?.createMessage { _: Int, _: Any? -> videoChanged(x) }
-					?.setPosition(x)?.setDeleteAfterDelivery(false)?.send()
-			}
-		}
-
-		private fun videoChanged(x: Long) {
-			val str = "video text sec. $x"
-			Log.i("ServerSampleFragment", "video text sec. $x")
-			viewModel.postHlsText(str)
-
-		}
-
-		private fun shouldDownload(track: Format): Boolean {
-			return track.height != 240 && track.sampleMimeType.equals("video/avc", true);
-		}
-
-
-		override fun onPrepareError(helper: DownloadHelper, e: IOException) {
-			Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show()
-			Log.e("ServerSampleFragment", e.toString())
-		}
+	override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+		return NavigationUI.onNavDestinationSelected(
+			item!!,
+			view!!.findNavController()) || super.onOptionsItemSelected(item)
 	}
-
 }
