@@ -23,6 +23,7 @@ class ServerSampleFragment : Fragment() {
 	private val viewModel: ServerSampleViewModel by lazy {
 		ViewModelProviders.of(this).get(ServerSampleViewModel::class.java)
 	}
+
 	private var serverVideoPlayer: ServerVideoPlayer? = null
 
 	override fun onCreateView(
@@ -46,7 +47,6 @@ class ServerSampleFragment : Fragment() {
 		serverVideoPlayer?.let {
 			it.onPlayerResume()
 		}
-
 		viewModel.dataPath.observe(this, Observer {
 			sourceDecision(it)
 		})
@@ -55,29 +55,30 @@ class ServerSampleFragment : Fragment() {
 	private fun sourceDecision(type: String) {
 		when(type) {
 			"HLS" -> {
-				binding.hlsText.visibility = View.VISIBLE
-				serverVideoPlayer = HlsVideoPlayer(binding, viewModel, context)
+				//binding.hlsText.visibility = View.VISIBLE
+				serverVideoPlayer = HlsVideoPlayer(viewModel.hlsPath.value!!, context)
+
 				serverVideoPlayer!!.setPlayer()
-				binding.playerViewContainer.visibility = View.VISIBLE
+			//	binding.playerViewContainer.visibility = View.VISIBLE
 				binding.buttonsContainer.visibility = View.GONE
 			}
 			"MP3" -> {
-				binding.hlsText.visibility = View.GONE
-				serverVideoPlayer = ProgressiveVideoPlayer(binding, viewModel, context, viewModel.mp3Path.value)
+				//binding.hlsText.visibility = View.GONE
+				serverVideoPlayer = ProgressiveVideoPlayer(context, viewModel.mp3Path.value)
 				serverVideoPlayer!!.setPlayer()
-				binding.playerViewContainer.visibility = View.VISIBLE
+			//	binding.playerViewContainer.visibility = View.VISIBLE
 				binding.buttonsContainer.visibility = View.GONE
 			}
 			"MP4" -> {
-				binding.hlsText.visibility = View.GONE
-				serverVideoPlayer = ProgressiveVideoPlayer(binding, viewModel, context, viewModel.mp4Path.value)
+				//binding.hlsText.visibility = View.GONE
+				serverVideoPlayer = ProgressiveVideoPlayer(context, viewModel.mp4Path.value)
 				serverVideoPlayer!!.setPlayer()
-				binding.playerViewContainer.visibility = View.VISIBLE
+			//	binding.playerViewContainer.visibility = View.VISIBLE
 				binding.buttonsContainer.visibility = View.GONE
 			}
 			"" -> {
 				serverVideoPlayer!!.releasePlayer()
-				binding.playerViewContainer.visibility = View.GONE
+			//	binding.playerViewContainer.visibility = View.GONE
 				binding.buttonsContainer.visibility = View.VISIBLE
 			}
 		}

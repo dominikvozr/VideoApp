@@ -1,6 +1,7 @@
 package com.example.videoApp.utils.serverPlayerUtils
 
 import android.content.Context
+import android.util.AttributeSet
 import android.util.Log
 import android.widget.Toast
 import androidx.core.net.toUri
@@ -16,14 +17,15 @@ import com.google.android.exoplayer2.offline.StreamKey
 import java.io.IOException
 
 class HlsVideoPlayer(
-	binding: FragmentServerSampleBinding,
-	private val viewModel: ServerSampleViewModel,
-	private val context: Context?
-): ServerVideoPlayer( binding, viewModel, context) {
+	private val sourcePath: String,
+	context: Context?,
+	attrs: AttributeSet? = null,
+	defStyleAttr: Int = 0
+): ServerVideoPlayer( sourcePath, context!!, attrs, defStyleAttr) {
 	override fun setPlayerMediaSource() {
 		val downloadHelper = DownloadHelper.forMediaItem(
 			context!!,
-			MediaItem.fromUri(viewModel.hlsPath.value!!.toUri()),
+			MediaItem.fromUri(sourcePath.toUri()),
 			DefaultRenderersFactory(context!!),
 			cacheDataSourceFactory
 		)

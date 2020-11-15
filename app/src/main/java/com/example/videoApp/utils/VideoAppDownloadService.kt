@@ -28,7 +28,6 @@ class VideoAppDownloadService() : DownloadService(
 	0
 ) {
 	override fun getDownloadManager(): DownloadManager {
-
 		val downloadManager = getDownloadManager(this)
 		val downloadNotificationHelper = getDownloadNotificationHelper(this)
 		downloadManager!!.addListener(
@@ -36,9 +35,7 @@ class VideoAppDownloadService() : DownloadService(
 				this, downloadNotificationHelper!!, FOREGROUND_NOTIFICATION_ID + 1
 			)
 		)
-
 		downloadManager.requirements = Requirements(NETWORK)
-
 		return downloadManager
 	}
 

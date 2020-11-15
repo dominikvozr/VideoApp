@@ -27,26 +27,4 @@ class MainActivity : AppCompatActivity() {
 	override fun onSupportNavigateUp(): Boolean {
 		return navController.navigateUp()
 	}
-
-	/*override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-		R.id.action_my_videos -> {
-			navController.navigate(VideoPlayerFragmentDirections.actionVideoPlayerFragmentToMainFragment())
-			true
-		}
-
-		R.id.action_server_videos -> {
-			navController.navigate(MainFragmentDirections.actionMainFragmentToServerSampleFragment())
-			true
-		}
-
-		else -> {
-			super.onOptionsItemSelected(item)
-		}
-	}*/
-
-	/*override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		menuInflater.inflate(R.menu.menu, menu)
-		return true
-	}*/
 }

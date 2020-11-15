@@ -1,23 +1,83 @@
 package com.example.videoApp.utils.serverPlayerUtils
 
 import android.content.Context
+import android.util.AttributeSet
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.ImageButton
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.example.videoApp.R
 import com.example.videoApp.databinding.FragmentServerSampleBinding
 import com.example.videoApp.utils.DemoUtil
 import com.example.videoApp.viewModels.ServerSampleViewModel
-import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.ExoPlaybackException
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.BehindLiveWindowException
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
+import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.cache.CacheDataSource
+import kotlinx.android.synthetic.main.list_item_video.view.*
 
-abstract class ServerVideoPlayer(
+abstract class ServerVideoPlayer/*(
 	private val binding: FragmentServerSampleBinding,
 	private val viewModel: ServerSampleViewModel,
 	private val context: Context?
-) {
+)*/ : ConstraintLayout {
+
+	//private var binding: FragmentServerSampleBinding
+	private var sourcePath: String
 	lateinit var player: SimpleExoPlayer
 	lateinit var cacheDataSourceFactory: DataSource.Factory
+
+	private lateinit var hls_text: TextView
+	private lateinit var close_btn: ImageButton
+	private lateinit var player_view: PlayerView
+	private lateinit var custom_player_container: ConstraintLayout
+
+	constructor(context: Context) : super(context) {
+		this.sourcePath = ""
+		init()
+	}
+
+	constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
+		this.sourcePath = ""
+		init()
+	}
+
+	@JvmOverloads
+	constructor(
+		//binding: FragmentServerSampleBinding,
+		sourcePath: String,
+		context: Context,
+		attrs: AttributeSet? = null,
+		defStyleAttr: Int = 0)
+			: super(context, attrs, defStyleAttr) {
+		this.sourcePath = sourcePath
+		//this.viewModel = viewModel
+
+		init()
+
+	}
+
+	fun init() {
+		val layout =
+			LayoutInflater.from(context).inflate(R.layout.video_app_player_view, this, false);
+		addView(layout)
+
+		setFocusable(true)
+		setFocusableInTouchMode(true)
+
+		hls_text = layout.findViewById(R.id.hls_text)
+		close_btn = layout.findViewById(R.id.close_btn)
+		player_view = layout.findViewById(R.id.player_view)
+		custom_player_container = layout.findViewById(R.id.custom_player_container)
+		custom_player_container.visibility = View.VISIBLE
+	}
+
 
 	private fun createCacheDataSourceFactory(){
 		cacheDataSourceFactory = DemoUtil.getDownloadCache(context!!)?.let {
@@ -35,7 +95,8 @@ abstract class ServerVideoPlayer(
 				DefaultMediaSourceFactory(cacheDataSourceFactory!!)
 			)
 			.build()
-		binding.playerView.player = player
+		player_view.player = player
+
 	}
 
 	fun onPlayerResume() {
@@ -64,7 +125,7 @@ abstract class ServerVideoPlayer(
 	private fun videoChanged(x: Long) {
 		val str = "video text sec. $x"
 		Log.i("ServerSampleFragment", "video text sec. $x")
-		viewModel.postHlsText(str)
+		hls_text.text = str
 
 	}
 
@@ -81,7 +142,7 @@ abstract class ServerVideoPlayer(
 		override fun onPlaybackStateChanged(state: Int) {
 			when(state) {
 				Player.STATE_READY -> {
-					if (viewModel.dataPath.value === "HLS") setupTitles()
+					if (sourcePath.takeLast(4) === "m3u8") setupTitles()
 				}
 			}
 			super.onPlaybackStateChanged(state)
@@ -112,6 +173,7 @@ abstract class ServerVideoPlayer(
 	}
 
 	fun releasePlayer() {
+		custom_player_container.visibility = View.GONE
 		player.release()
 	}
 
