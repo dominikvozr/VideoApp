@@ -9,18 +9,11 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.videoApp.R
-import com.example.videoApp.utils.DemoUtil
-import com.example.videoApp.utils.HlsAppPlayerViewAdapter
-/*import com.example.videoApp.utils.serverPlayerUtils.HlsVideoPlayer
-import com.example.videoApp.utils.serverPlayerUtils.ProgressiveVideoPlayer*/
-import com.example.videoApp.utils.serverPlayerUtils.ServerVideoPlayer
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.BehindLiveWindowException
-import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
 import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.upstream.cache.CacheDataSource
 
 class VideoAppPlayerView : ConstraintLayout {
 

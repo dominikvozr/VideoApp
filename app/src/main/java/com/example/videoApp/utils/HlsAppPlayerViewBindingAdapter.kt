@@ -2,11 +2,9 @@ package com.example.videoApp.utils
 
 import android.content.Context
 import android.util.Log
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
-import com.example.videoApp.utils.serverPlayerUtils.ServerVideoPlayer
 import com.example.videoApp.views.VideoAppPlayerView
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.offline.DownloadHelper

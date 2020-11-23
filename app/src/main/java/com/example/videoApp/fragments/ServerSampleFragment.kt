@@ -11,9 +11,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.example.videoApp.R
 import com.example.videoApp.databinding.FragmentServerSampleBinding
-/*import com.example.videoApp.utils.serverPlayerUtils.HlsVideoPlayer
-import com.example.videoApp.utils.serverPlayerUtils.ProgressiveVideoPlayer*/
-import com.example.videoApp.utils.serverPlayerUtils.ServerVideoPlayer
 import com.example.videoApp.viewModels.ServerSampleViewModel
 
 
