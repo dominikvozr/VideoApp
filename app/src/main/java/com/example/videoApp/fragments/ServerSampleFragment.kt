@@ -7,11 +7,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.example.videoApp.R
 import com.example.videoApp.databinding.FragmentServerSampleBinding
-import com.example.videoApp.utils.serverPlayerUtils.HlsVideoPlayer
-import com.example.videoApp.utils.serverPlayerUtils.ProgressiveVideoPlayer
+/*import com.example.videoApp.utils.serverPlayerUtils.HlsVideoPlayer
+import com.example.videoApp.utils.serverPlayerUtils.ProgressiveVideoPlayer*/
 import com.example.videoApp.utils.serverPlayerUtils.ServerVideoPlayer
 import com.example.videoApp.viewModels.ServerSampleViewModel
 
@@ -23,8 +24,6 @@ class ServerSampleFragment : Fragment() {
 	private val viewModel: ServerSampleViewModel by lazy {
 		ViewModelProviders.of(this).get(ServerSampleViewModel::class.java)
 	}
-
-	private var serverVideoPlayer: ServerVideoPlayer? = null
 
 	override fun onCreateView(
 		inflater: LayoutInflater, container: ViewGroup?,
@@ -44,10 +43,7 @@ class ServerSampleFragment : Fragment() {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		serverVideoPlayer?.let {
-			it.onPlayerResume()
-		}
-		viewModel.dataPath.observe(this, Observer {
+		viewModel.dataPath.observe(viewLifecycleOwner, Observer {
 			sourceDecision(it)
 		})
 	}
@@ -55,35 +51,17 @@ class ServerSampleFragment : Fragment() {
 	private fun sourceDecision(type: String) {
 		when(type) {
 			"HLS" -> {
-				//binding.hlsText.visibility = View.VISIBLE
-				serverVideoPlayer = HlsVideoPlayer(viewModel.hlsPath.value!!, context)
-
-				serverVideoPlayer!!.setPlayer()
-			//	binding.playerViewContainer.visibility = View.VISIBLE
-				binding.buttonsContainer.visibility = View.GONE
+				findNavController().navigate(ServerSampleFragmentDirections.actionServerSampleFragmentToHlsVideoPlayerFragment())
 			}
 			"MP3" -> {
-				//binding.hlsText.visibility = View.GONE
-				serverVideoPlayer = ProgressiveVideoPlayer(context, viewModel.mp3Path.value)
-				serverVideoPlayer!!.setPlayer()
-			//	binding.playerViewContainer.visibility = View.VISIBLE
-				binding.buttonsContainer.visibility = View.GONE
+				findNavController().navigate(ServerSampleFragmentDirections.actionServerSampleFragmentToMp3VideoPlayerFragment())
 			}
 			"MP4" -> {
-				//binding.hlsText.visibility = View.GONE
-				serverVideoPlayer = ProgressiveVideoPlayer(context, viewModel.mp4Path.value)
-				serverVideoPlayer!!.setPlayer()
-			//	binding.playerViewContainer.visibility = View.VISIBLE
-				binding.buttonsContainer.visibility = View.GONE
-			}
-			"" -> {
-				serverVideoPlayer!!.releasePlayer()
-			//	binding.playerViewContainer.visibility = View.GONE
-				binding.buttonsContainer.visibility = View.VISIBLE
+				findNavController().navigate(ServerSampleFragmentDirections.actionServerSampleFragmentToMp4VideoPlayerFragment())
 			}
 		}
 	}
-	override fun onStart() {
+	/*override fun onStart() {
 		super.onStart()
 		serverVideoPlayer?.let {
 			it.setPlayer()
@@ -116,16 +94,16 @@ class ServerSampleFragment : Fragment() {
 		serverVideoPlayer?.let {
 			it.releasePlayer()
 		}
-	}
+	}*/
 
-	override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		super.onCreateOptionsMenu(menu, inflater)
-		inflater?.inflate(R.menu.menu,  menu)
+		inflater.inflate(R.menu.menu,  menu)
 	}
 
-	override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		return NavigationUI.onNavDestinationSelected(
-			item!!,
-			view!!.findNavController()) || super.onOptionsItemSelected(item)
+			item,
+			requireView().findNavController()) || super.onOptionsItemSelected(item)
 	}
 }

@@ -57,7 +57,7 @@ class MainFragment : Fragment() {
 	}
 
 	private fun setAdapter() {
-		videoListAdapter = VideoAdapter(context!!, mainViewModel.videos as ArrayList<Video>)
+		videoListAdapter = VideoAdapter(requireContext(), mainViewModel.videos as ArrayList<Video>)
 
 		binding.videoList.adapter = videoListAdapter
 
@@ -90,14 +90,14 @@ class MainFragment : Fragment() {
 		PlayerViewAdapter.releaseAllPlayers()
 	}
 
-	override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		super.onCreateOptionsMenu(menu, inflater)
-		inflater?.inflate(R.menu.menu,  menu)
+		inflater.inflate(R.menu.menu,  menu)
 	}
 
-	override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		return NavigationUI.onNavDestinationSelected(
-			item!!,
-			view!!.findNavController()) || super.onOptionsItemSelected(item)
+			item,
+			requireView().findNavController()) || super.onOptionsItemSelected(item)
 	}
 }

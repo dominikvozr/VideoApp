@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+	<data>
+		<variable
+			name="viewModel"
+			type="com.example.videoApp.viewModels.Mp3VideoPlayerViewModel" />
+	</data>
+	<androidx.constraintlayout.widget.ConstraintLayout
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent" >
+
+		<com.example.videoApp.views.VideoAppPlayerView
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			progressive_source_url="@{viewModel.mp3Path}" />
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

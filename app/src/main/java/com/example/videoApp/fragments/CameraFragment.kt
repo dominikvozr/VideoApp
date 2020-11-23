@@ -15,12 +15,11 @@ import com.example.videoApp.viewModels.CameraViewModel
 import com.example.videoApp.databinding.FragmentCameraBinding
 import com.otaliastudios.cameraview.controls.Facing
 import kotlinx.android.synthetic.main.fragment_camera.*
-private val TAG = "CameraFragment"
 
 class CameraFragment : Fragment() {
 
 	private val cameraViewModel: CameraViewModel by lazy {
-		//val activity = requireNotNull(this.activity){}
+
 		ViewModelProviders.of(this).get(CameraViewModel::class.java)
 	}
 
@@ -46,7 +45,7 @@ class CameraFragment : Fragment() {
 		binding.camera
 
 		//observer
-		cameraViewModel.onTakeVideo.observe(this, Observer {
+		cameraViewModel.onTakeVideo.observe(viewLifecycleOwner, Observer {
 			when (it) {
 				true  -> {
 					cameraViewModel.video?.file?.let { videoFile ->
@@ -61,7 +60,7 @@ class CameraFragment : Fragment() {
 			}
 		})
 
-		cameraViewModel.videoResult.observe(this, Observer {
+		cameraViewModel.videoResult.observe(viewLifecycleOwner, Observer {
 			if (null != it) {
 				this.findNavController().navigate(
                     CameraFragmentDirections.actionCameraFragmentToVideoPlayerFragment(
@@ -72,7 +71,7 @@ class CameraFragment : Fragment() {
 			}
 		})
 
-		cameraViewModel.onChangeCamera.observe(this, Observer {
+		cameraViewModel.onChangeCamera.observe(viewLifecycleOwner, Observer {
 			if (true == it) {
 				if (camera.facing == Facing.FRONT) {
 					camera.facing = Facing.BACK
@@ -93,14 +92,14 @@ class CameraFragment : Fragment() {
 		super.onDestroyView()
 	}
 
-	override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		super.onCreateOptionsMenu(menu, inflater)
-		inflater?.inflate(R.menu.menu,  menu)
+		inflater.inflate(R.menu.menu,  menu)
 	}
 
-	override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		return NavigationUI.onNavDestinationSelected(
-			item!!,
-			view!!.findNavController()) || super.onOptionsItemSelected(item)
+			item,
+			requireView().findNavController()) || super.onOptionsItemSelected(item)
 	}
 }

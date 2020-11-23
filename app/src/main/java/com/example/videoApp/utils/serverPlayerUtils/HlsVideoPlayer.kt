@@ -16,12 +16,10 @@ import com.google.android.exoplayer2.offline.DownloadService
 import com.google.android.exoplayer2.offline.StreamKey
 import java.io.IOException
 
-class HlsVideoPlayer(
-	private val sourcePath: String,
+/*class HlsVideoPlayer(
 	context: Context?,
-	attrs: AttributeSet? = null,
-	defStyleAttr: Int = 0
-): ServerVideoPlayer( sourcePath, context!!, attrs, defStyleAttr) {
+	attrs: AttributeSet? = null
+): ServerVideoPlayer( context!!, attrs!!) {
 	override fun setPlayerMediaSource() {
 		val downloadHelper = DownloadHelper.forMediaItem(
 			context!!,
@@ -76,4 +74,4 @@ class HlsVideoPlayer(
 			Log.e("ServerSampleFragment", e.toString())
 		}
 	}
-}
+}*/

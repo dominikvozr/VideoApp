@@ -36,21 +36,21 @@ class VideoPlayerFragment : Fragment() {
 
 		val binding: FragmentVideoPlayerBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_video_player, container, false)
 
-		val videoPlayerViewModelFactory = VideoPlayerViewModelFactory(activity!!.application ,args.videoPath)
+		val videoPlayerViewModelFactory = VideoPlayerViewModelFactory(requireActivity().application ,args.videoPath)
 
 		val videoPlayerViewModel = ViewModelProviders
 			.of(this, videoPlayerViewModelFactory)
 			.get(VideoPlayerViewModel::class.java)
 
 		binding.lifecycleOwner = this
-		player = SimpleExoPlayer.Builder(context!!).build()
+		player = SimpleExoPlayer.Builder(requireContext()).build()
 		binding.playerView.player = player
 
 		binding.playerView.useController = false
 		// Produces DataSource instances through which media data is loaded.
 		val dataSourceFactory: DataSource.Factory = DefaultDataSourceFactory(
-			context!!,
-			Util.getUserAgent(context!!, "VideoApp")
+			requireContext(),
+			Util.getUserAgent(requireContext(), "VideoApp")
 		)
 
 		// This is the MediaSource representing the media to be played.
@@ -70,14 +70,14 @@ class VideoPlayerFragment : Fragment() {
 			videoPlayerViewModel.deleteVideo()
 		}
 
-		videoPlayerViewModel.onSaveVideo.observe(this, Observer {
+		videoPlayerViewModel.onSaveVideo.observe(viewLifecycleOwner, Observer {
 			if (it == true) {
 				this.findNavController().navigate(VideoPlayerFragmentDirections.actionVideoPlayerFragmentToMainFragment())
 				videoPlayerViewModel.navigationCompleted()
 			}
 		})
 
-		videoPlayerViewModel.onDeleteVideo.observe(this, Observer {
+		videoPlayerViewModel.onDeleteVideo.observe(viewLifecycleOwner, Observer {
 			if (it == true) {
 				this.findNavController().navigate(VideoPlayerFragmentDirections.actionVideoPlayerFragmentToCameraFragment())
 				videoPlayerViewModel.navigationCompleted()
@@ -94,14 +94,14 @@ class VideoPlayerFragment : Fragment() {
 		player.release()
 	}
 
-	override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		super.onCreateOptionsMenu(menu, inflater)
-		inflater?.inflate(R.menu.menu,  menu)
+		inflater.inflate(R.menu.menu,  menu)
 	}
 
-	override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		return NavigationUI.onNavDestinationSelected(
-			item!!,
-			view!!.findNavController()) || super.onOptionsItemSelected(item)
+			item,
+			requireView().findNavController()) || super.onOptionsItemSelected(item)
 	}
 }

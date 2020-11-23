@@ -42,5 +42,39 @@
 	<fragment
 		android:id="@+id/serverSampleFragment"
 		android:name="com.example.videoApp.fragments.ServerSampleFragment"
-		android:label="ServerSampleFragment" />
+		android:label="ServerSampleFragment" >
+		<action
+			android:id="@+id/action_serverSampleFragment_to_hlsVideoPlayerFragment"
+			app:destination="@id/hlsVideoPlayerFragment" />
+		<action
+			android:id="@+id/action_serverSampleFragment_to_mp3VideoPlayerFragment"
+			app:destination="@id/mp3VideoPlayerFragment" />
+		<action
+			android:id="@+id/action_serverSampleFragment_to_mp4VideoPlayerFragment"
+			app:destination="@id/mp4VideoPlayerFragment" />
+	</fragment>
+	<fragment
+		android:id="@+id/hlsVideoPlayerFragment"
+		android:name="com.example.videoApp.fragments.HlsVideoPlayerFragment"
+		android:label="HlsVideoPlayerFragment" >
+		<action
+			android:id="@+id/action_hlsVideoPlayerFragment_to_serverSampleFragment"
+			app:destination="@id/serverSampleFragment" />
+	</fragment>
+	<fragment
+		android:id="@+id/mp3VideoPlayerFragment"
+		android:name="com.example.videoApp.fragments.Mp3VideoPlayerFragment"
+		android:label="Mp3VideoPlayerFragment" >
+		<action
+			android:id="@+id/action_mp3VideoPlayerFragment_to_serverSampleFragment"
+			app:destination="@id/serverSampleFragment" />
+	</fragment>
+	<fragment
+		android:id="@+id/mp4VideoPlayerFragment"
+		android:name="com.example.videoApp.fragments.Mp4VideoPlayerFragment"
+		android:label="Mp4VideoPlayerFragment" >
+		<action
+			android:id="@+id/action_mp4VideoPlayerFragment_to_serverSampleFragment"
+			app:destination="@id/serverSampleFragment" />
+	</fragment>
 </navigation>

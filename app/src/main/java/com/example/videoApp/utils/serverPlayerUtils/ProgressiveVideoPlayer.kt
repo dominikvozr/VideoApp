@@ -10,14 +10,10 @@ import com.example.videoApp.viewModels.ServerSampleViewModel
 import com.google.android.exoplayer2.offline.DownloadRequest
 import com.google.android.exoplayer2.offline.DownloadService
 
-class ProgressiveVideoPlayer (
-	/*binding: FragmentServerSampleBinding,
-	viewModel: ServerSampleViewModel,*/
+/*class ProgressiveVideoPlayer (
 	context: Context?,
-	private val strSource: String?,
-	attrs: AttributeSet? = null,
-	defStyleAttr: Int = 0
-): ServerVideoPlayer( strSource!!, context!!, attrs, defStyleAttr) {
+	attrs: AttributeSet? = null
+): ServerVideoPlayer( context!!, attrs!!) {
 	override fun setPlayerMediaSource() {
 		val downloadRequest = DownloadRequest.Builder(
 			strSource!!,
@@ -31,4 +27,4 @@ class ProgressiveVideoPlayer (
 			false
 		)
 	}
-}
+}*/
