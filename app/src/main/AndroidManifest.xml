@@ -1,31 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	package="com.example.videoApp">
-
-	<uses-permission android:name="android.permission.CAMERA" />
+	android:extractNativeLibs="true"
+	package="com.likerik.videoApp">
+	<!--<uses-permission android:name="android.permission.CAMERA" />-->
 	<uses-permission android:name="android.permission.RECORD_AUDIO" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
 	<uses-feature
 		android:name="android.hardware.camera"
-		android:required="true" />
+		android:required="false" />
+	<uses-feature
+		android:name="android.hardware.camera.autofocus"
+		android:required="false" />
 
 	<application
 		android:largeHeap="true"
-		android:allowBackup="true"
-		android:icon="@mipmap/ic_launcher"
 		android:label="@string/app_name"
 		android:requestLegacyExternalStorage="true"
+		android:allowBackup="true"
+		android:icon="@mipmap/ic_launcher"
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
-		android:theme="@style/Theme.AppCompat.NoActionBar">
-		<activity android:name="com.example.videoApp.MainActivity">
+		android:theme="@style/Theme.Design.NoActionBar"
+		android:fullBackupContent="@xml/backup_descriptor">
+		<meta-data
+			android:name="firebase_performance_logcat_enabled"
+			android:value="true" />
+		<meta-data
+			android:name="firebase_performance_collection_enabled"
+			android:value="true" />
+		<activity android:name=".MainActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 
@@ -33,9 +43,9 @@
 			</intent-filter>
 		</activity>
 
-		<service android:name=".utils.VideoAppDownloadService"
+		<service android:name=".utils.stories.VideoAppDownloadService"
 			android:permission="android.permission.BIND_JOB_SERVICE"
-			android:exported="true" >
+			android:exported="false" >
 			<!-- This is needed for Scheduler -->
 			<intent-filter>
 				<action android:name="com.google.android.exoplayer.downloadService.action.RESTART"/>

@@ -2,21 +2,23 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
-	android:id="@+id/navigation"
-	app:startDestination="@id/mainFragment">
+    app:startDestination="@id/mainFragment">
 
 	<fragment
 		android:id="@+id/mainFragment"
-		android:name="com.example.videoApp.fragments.MainFragment"
+		android:name="com.likerik.videoApp.fragments.MainFragment"
 		android:label="fragment_main"
 		tools:layout="@layout/fragment_main" >
 		<action
 			android:id="@+id/action_mainFragment_to_cameraFragment"
 			app:destination="@id/cameraFragment" />
+		<action
+			android:id="@+id/action_mainFragment_to_storiesFragment"
+			app:destination="@id/storiesFragment" />
 	</fragment>
 	<fragment
 		android:id="@+id/videoPlayerFragment"
-		android:name="com.example.videoApp.fragments.VideoPlayerFragment"
+		android:name="com.likerik.videoApp.fragments.VideoPlayerFragment"
 		android:label="fragment_video_player"
 		tools:layout="@layout/fragment_video_player" >
 		<argument android:name="videoPath"
@@ -32,7 +34,7 @@
 	</fragment>
 	<fragment
 		android:id="@+id/cameraFragment"
-		android:name="com.example.videoApp.fragments.CameraFragment"
+		android:name="com.likerik.videoApp.fragments.CameraFragment"
 		android:label="CameraFragment" >
 		<action
 			android:id="@+id/action_cameraFragment_to_videoPlayerFragment"
@@ -40,41 +42,11 @@
 			app:popUpToInclusive="false" />
 	</fragment>
 	<fragment
-		android:id="@+id/serverSampleFragment"
-		android:name="com.example.videoApp.fragments.ServerSampleFragment"
-		android:label="ServerSampleFragment" >
+		android:id="@+id/storiesFragment"
+		android:name="com.likerik.videoApp.fragments.StoriesFragment"
+		android:label="StoriesFragment" >
 		<action
-			android:id="@+id/action_serverSampleFragment_to_hlsVideoPlayerFragment"
-			app:destination="@id/hlsVideoPlayerFragment" />
-		<action
-			android:id="@+id/action_serverSampleFragment_to_mp3VideoPlayerFragment"
-			app:destination="@id/mp3VideoPlayerFragment" />
-		<action
-			android:id="@+id/action_serverSampleFragment_to_mp4VideoPlayerFragment"
-			app:destination="@id/mp4VideoPlayerFragment" />
-	</fragment>
-	<fragment
-		android:id="@+id/hlsVideoPlayerFragment"
-		android:name="com.example.videoApp.fragments.HlsVideoPlayerFragment"
-		android:label="HlsVideoPlayerFragment" >
-		<action
-			android:id="@+id/action_hlsVideoPlayerFragment_to_serverSampleFragment"
-			app:destination="@id/serverSampleFragment" />
-	</fragment>
-	<fragment
-		android:id="@+id/mp3VideoPlayerFragment"
-		android:name="com.example.videoApp.fragments.Mp3VideoPlayerFragment"
-		android:label="Mp3VideoPlayerFragment" >
-		<action
-			android:id="@+id/action_mp3VideoPlayerFragment_to_serverSampleFragment"
-			app:destination="@id/serverSampleFragment" />
-	</fragment>
-	<fragment
-		android:id="@+id/mp4VideoPlayerFragment"
-		android:name="com.example.videoApp.fragments.Mp4VideoPlayerFragment"
-		android:label="Mp4VideoPlayerFragment" >
-		<action
-			android:id="@+id/action_mp4VideoPlayerFragment_to_serverSampleFragment"
-			app:destination="@id/serverSampleFragment" />
+			android:id="@+id/action_storiesFragment_to_mainFragment"
+			app:destination="@id/mainFragment" />
 	</fragment>
 </navigation>

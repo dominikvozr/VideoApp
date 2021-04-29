@@ -24,7 +24,7 @@
     <remote-repository>
       <option name="id" value="maven" />
       <option name="name" value="maven" />
-      <option name="url" value="https://google.bintray.com/exoplayer/" />
+      <option name="url" value="https://sdk.uxcam.com/android/" />
     </remote-repository>
   </component>
 </project>

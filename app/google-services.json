@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1070194477849",
+    "project_id": "videoapp-81fa5",
+    "storage_bucket": "videoapp-81fa5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1070194477849:android:09a5171b7b5778a2c71388",
+        "android_client_info": {
+          "package_name": "com.likerik.videoapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1070194477849-n4d06q13kkio57cu0phcfkilpgl2gu1v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBl6k8t1RdasESNNG0PGn7vOpJD11JT82Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1070194477849-n4d06q13kkio57cu0phcfkilpgl2gu1v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

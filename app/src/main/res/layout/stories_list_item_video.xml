@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<data>
+
+		<variable
+			name="newStoriesVideo"
+			type="com.likerik.videoApp.domain.NewStoriesVideo" />
+		<variable
+			name="callback"
+			type="com.likerik.videoApp.utils.PlayerStateCallback" />
+		<variable
+			name="index"
+			type="int" />
+
+	</data>
+
+	<com.likerik.videoApp.views.StoriesPlayerView
+		android:id="@+id/player_view"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		app:video_url="@{newStoriesVideo}"
+		app:on_state_change="@{callback}"
+		app:item_index="@{index}" />
+</layout>

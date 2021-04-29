@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools">
+	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<data>
 
 		<variable
 			name="video"
-			type="com.example.videoApp.domain.Video" />
+			type="com.likerik.videoApp.domain.Video" />
 		<variable
 			name="callback"
-			type="com.example.videoApp.utils.PlayerStateCallback" />
+			type="com.likerik.videoApp.utils.PlayerStateCallback" />
 		<variable
 			name="index"
 			type="int" />
 
 	</data>
 
-	<com.example.videoApp.views.VideoAppPlayerView
+	<com.likerik.videoApp.views.VideoAppPlayerView
 		android:id="@+id/player_view"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
