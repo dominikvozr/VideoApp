@@ -9,7 +9,6 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 
 class VideoAppPlayerView : ConstraintLayout {
 	lateinit var binding : VideoAppPlayerViewBinding
-	lateinit var player: SimpleExoPlayer
 
 	@JvmOverloads
 	constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)

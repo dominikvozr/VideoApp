@@ -10,9 +10,11 @@ import android.provider.MediaStore
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.likerik.videoApp.domain.Video
 import com.otaliastudios.cameraview.VideoResult
 import com.otaliastudios.cameraview.controls.Mode
+import kotlinx.coroutines.launch
 import java.io.File
 
 class CameraViewModel(application: Application) : AndroidViewModel(application) {
@@ -78,9 +80,12 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
 	}
 
 	private fun writeFile() {
-		val videoName = videoRandomName()
-		val uri = createNewVideoFile(videoName)
-		video = Video(uri!!, File(getRealPathFromUri(uri)), videoName, null, null)
+		viewModelScope.launch {
+			// Coroutine that will be canceled when the ViewModel is cleared.
+			val videoName = videoRandomName()
+			val uri = createNewVideoFile(videoName)
+			video = Video(uri!!, File(getRealPathFromUri(uri)), videoName, null, null)
+		}
 	}
 
 	private fun videoRandomName(): String {
@@ -100,10 +105,6 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
 		return resolver.insert(videoCollection, newVideoDetails)
 	}
 
-
-	/*
-	* changes content Uri (content://...) to real part Uri (file://...)
-	* */
 	private fun getRealPathFromUri(contentUri: Uri?): String? {
 		var cursor: Cursor? = null
 		return try {

@@ -1,14 +1,14 @@
 package com.likerik.videoApp.utils.stories
 
-import com.likerik.videoApp.utils.stories.DemoUtil.DOWNLOAD_NOTIFICATION_CHANNEL_ID
+import com.likerik.videoApp.utils.stories.DownloadUtil.DOWNLOAD_NOTIFICATION_CHANNEL_ID
 
 import android.R.drawable
 import android.app.Notification
 import android.content.Context
 import androidx.annotation.Nullable
 import com.likerik.videoApp.R
-import com.likerik.videoApp.utils.stories.DemoUtil.getDownloadManager
-import com.likerik.videoApp.utils.stories.DemoUtil.getDownloadNotificationHelper
+import com.likerik.videoApp.utils.stories.DownloadUtil.getDownloadManager
+import com.likerik.videoApp.utils.stories.DownloadUtil.getDownloadNotificationHelper
 import com.google.android.exoplayer2.ext.workmanager.WorkManagerScheduler
 import com.google.android.exoplayer2.offline.Download
 import com.google.android.exoplayer2.offline.DownloadManager

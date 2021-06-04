@@ -4,30 +4,36 @@ import android.net.Uri
 import android.view.View
 import android.widget.Toast
 import androidx.databinding.BindingAdapter
+import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.SimpleExoPlayer
 import com.likerik.videoApp.utils.PlayerStateCallback
 import com.likerik.videoApp.views.VideoAppPlayerView
-import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.upstream.DataSource
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import com.google.android.exoplayer2.util.Util
 
 
 class PlayerViewAdapter {
 
 	companion object {
-		private var playersMap : MutableMap<Int, SimpleExoPlayer> = mutableMapOf()
-		private var currentPlayingVideo : Pair<Int, SimpleExoPlayer>? = null
-		private var currentvolume: Float = currentPlayingVideo?.second?.volume ?: 0f
+		private var playersMap    : MutableMap<Int, SimpleExoPlayer> = mutableMapOf()
+		private var playersInfo   : MutableMap<Int, Pair< Boolean, Pair< Uri, PlayerStateCallback >>> = mutableMapOf()
+		var currentPlayingVideo   : Pair<Int, SimpleExoPlayer>? = null
+		private var currentvolume : Float = currentPlayingVideo?.second?.volume ?: 0f
 
 		fun releaseAllPlayers(){
 			playersMap.map {
 				it.value.release()
 			}
+
+			playersInfo.map {
+				playersInfo[it.key] = it.value.copy(first = true)
+			}
 		}
 
 		fun releasePlayer(index: Int){
 			playersMap[index]?.release()
+
+			playersInfo[index]?.let {
+				playersInfo[index] = it.copy(first = true)
+			}
 		}
 
 		fun toggleSound(){
@@ -40,9 +46,10 @@ class PlayerViewAdapter {
 			}
 		}
 
-		private fun pauseCurrentPlayingVideo(){
+		fun pauseCurrentPlayingVideo(){
 			if (currentPlayingVideo != null){
 				currentPlayingVideo?.second?.playWhenReady = false
+				//currentPlayingVideo?.first?.let { releasePlayer(it) }
 			}
 		}
 
@@ -57,39 +64,30 @@ class PlayerViewAdapter {
 
 		@JvmStatic
 		@BindingAdapter(value = ["video_url", "on_state_change", "item_index"], requireAll = true)
-		fun VideoAppPlayerView.loadVideo(uri: Uri, callback: PlayerStateCallback, item_index: Int? = null) {
-			val newPlayer = SimpleExoPlayer.Builder(
-				context!!,
-				DefaultRenderersFactory(context)
+		fun VideoAppPlayerView.loadVideo(
+			uri: Uri,
+			callback: PlayerStateCallback,
+			item_index: Int? = null
+		) {
 
-			).setLoadControl(
-					DefaultLoadControl.Builder()
-						.setPrioritizeTimeOverSizeThresholds(false)
-						.createDefaultLoadControl()
-				)
-				.build()
+			val newPlayer = SimpleExoPlayer.Builder(context).build()
 
+			newPlayer.setMediaItem(MediaItem.fromUri(uri))
+			newPlayer.prepare()
 			newPlayer.playWhenReady = false
 			newPlayer.repeatMode = Player.REPEAT_MODE_ALL
-			binding.playerView.setKeepContentOnPlayerReset(true)
-			binding.playerView.useController = false
-			val dataSourceFactory: DataSource.Factory = DefaultDataSourceFactory(
-				context,
-				Util.getUserAgent(context!!, "VideoApp")
-			)
-			val mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)
-				.createMediaSource(uri)
-			newPlayer.setMediaSource(mediaSource)
 
-			newPlayer.prepare()
-
-			binding.playerView.player = newPlayer
 			currentvolume = newPlayer.volume
+			binding.playerView.player = newPlayer
+			//binding.playerView.setKeepContentOnPlayerReset(true)
+			binding.playerView.useController = false
 
 			if (playersMap.containsKey(item_index))
 				playersMap.remove(item_index)
+
 			if (item_index != null)
 				playersMap[item_index] = newPlayer
+
 
 			newPlayer.addListener(object : Player.EventListener {
 
@@ -99,11 +97,14 @@ class PlayerViewAdapter {
 				}
 
 				override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-					super.onPlayerStateChanged(playWhenReady, playbackState)
-
 					if (playbackState == Player.STATE_BUFFERING) {
 						callback.onVideoBuffering(newPlayer)
 						binding.progressBar.visibility = View.VISIBLE
+						//if (item_index == 0) {
+							//loadVideo(uri, callback, item_index)
+							//newPlayer.seekTo(state.toLong())
+							//newPlayer.playWhenReady = true
+						//}
 					}
 
 					if (playbackState == Player.STATE_READY) {
@@ -115,6 +116,11 @@ class PlayerViewAdapter {
 						callback.onStartedPlaying(newPlayer)
 					}
 
+					/*if (playbackState == Player.STATE_ENDED) {
+						loadVideo(uri, callback, item_index)
+						//newPlayer.seekTo(state.toLong())
+						newPlayer.playWhenReady = true
+					}*/
 				}
 			})
 		}

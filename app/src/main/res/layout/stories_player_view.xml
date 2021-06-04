@@ -45,20 +45,26 @@
 		android:id="@+id/options_container"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:weightSum="2"
-		android:orientation="horizontal">
+		android:orientation="horizontal"
+		android:weightSum="3">
 
 		<View
 			android:id="@+id/prev_btn"
-			android:layout_weight="1"
 			android:layout_width="0dp"
-			android:layout_height="match_parent" />
+			android:layout_height="match_parent"
+			android:layout_weight="1" />
+
+		<View
+			android:id="@+id/middle"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1" />
 
 		<View
 			android:id="@+id/next_btn"
-			android:layout_weight="1"
 			android:layout_width="0dp"
-			android:layout_height="wrap_content" />
+			android:layout_height="wrap_content"
+			android:layout_weight="1" />
 
 		<!--<androidx.constraintlayout.widget.ConstraintLayout
 		android:id="@+id/options_container"

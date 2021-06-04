@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.likerik.videoApp.databinding.StoriesPlayerViewBinding
-import com.likerik.videoApp.domain.HlsPlay
 import com.likerik.videoApp.domain.NewStoriesVideo
 import com.likerik.videoApp.utils.stories.StoriesPlayerViewAdapter
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -14,8 +13,7 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 class StoriesPlayerView : ConstraintLayout {
 	lateinit var binding : StoriesPlayerViewBinding
 	lateinit var playlist: NewStoriesVideo
-
-	private var landingIndex = 0
+	private val STEP : Long = 2000
 
 	@JvmOverloads
 	constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
@@ -26,37 +24,49 @@ class StoriesPlayerView : ConstraintLayout {
 	private fun init() {
 		val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 		binding = StoriesPlayerViewBinding.inflate(inflater, this, true)
-		/*next_btn.setOnClickListener {
-			playerView.player?.let{ player ->
-				if (playlist.landing.size-1 > landingIndex)
-					player.seekTo((playlist.landing[landingIndex+1].storiesVideo.track_offset*1000).toLong())
+		binding.nextBtn.setOnClickListener {
+			binding.playerView.player?.let{ player ->
+				if (player.contentPosition + STEP < player.duration)
+					player.seekTo(player.contentPosition + STEP)
+				else {
+					StoriesPlayerViewAdapter
+						.playerStateCallback
+						?.onFinishedPlaying(
+							StoriesPlayerViewAdapter.hlsPlayer!!,
+							StoriesPlayerViewAdapter.currentPlayingVideo!!.first
+						)
+				}
 			}
 		}
 
-		prev_btn.setOnClickListener {
-			playerView.player?.let{ player ->
-				if (landingIndex > 0)
-					player.seekTo((playlist.landing[landingIndex-1].storiesVideo.track_offset*1000).toLong())
+		binding.prevBtn.setOnClickListener {
+			binding.playerView.player?.let{ player ->
+				if (player.contentPosition - STEP > 0)
+					player.seekTo(player.contentPosition - STEP)
+				else
+					player.seekTo(0)
 			}
-		}*/
+		}
+
+		binding.middle.setOnClickListener {
+			StoriesPlayerViewAdapter.toggleSound()
+		}
 	}
 
 	fun setupTitles(hlsPlayer: SimpleExoPlayer) {
-		binding.textViewMusicTitle.text = StoriesPlayerViewAdapter.playlist!!.id.toString()
-		//this.video_id.text = StoriesPlayerViewAdapter.playlist!!.id.toString()
-		/*for (landingI in StoriesPlayerViewAdapter.playlist!!.landing.indices) {
-			val offset = StoriesPlayerViewAdapter.playlist!!.landing[landingI].storiesVideo.track_offset * 1000
+		//binding.textViewMusicTitle.text = StoriesPlayerViewAdapter.playlist!!.id.toString()
+		for (landingI in 0..StoriesPlayerViewAdapter.hlsPlayer!!.duration step(STEP) ) {
 			hlsPlayer.createMessage { _: Int, _: Any? -> videoChanged(
-				StoriesPlayerViewAdapter.playlist!!.landing[landingI],
-				landingI
+					landingI
 			) }
-				.setPosition(offset.toLong()).setDeleteAfterDelivery(false).send()
-		}*/
+					.setPosition(landingI).setDeleteAfterDelivery(false).send()
+		}
 	}
 
-	private fun videoChanged(landing: HlsPlay, landingI: Int) {
-		landingIndex = landingI
+	private fun videoChanged(landingI: Long) {
+		val musicTitleText = StoriesPlayerViewAdapter.playlist!!.id.toString() + " - " + landingI.toString()
 		post{
+			binding.textViewMusicTitle.text = musicTitleText
 			/*text_view_account_handle.text = landing.user.getStoryDisplayUserName()
 			text_view_video_description.text = landing.storiesVideo.getTagsDescription()
 			text_view_video_location.text = landing.storiesVideo.getLocation()*/

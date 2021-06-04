@@ -5,15 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.likerik.videoApp.domain.Video
-import com.likerik.videoApp.databinding.ListItemVideoBinding
-import com.likerik.videoApp.utils.PlayerStateCallback
 import com.google.android.exoplayer2.Player
+import com.likerik.videoApp.databinding.ListItemVideoBinding
+import com.likerik.videoApp.domain.Video
+import com.likerik.videoApp.utils.PlayerStateCallback
+
 
 class VideoAdapter(
 	private val context: Context,
-	private var videos: ArrayList<Video>
-	) : RecyclerView.Adapter<VideoAdapter.ViewHolder>(),
+	private val recyclerView: RecyclerView,
+	private var videos: MutableList<Video>
+) : RecyclerView.Adapter<VideoAdapter.ViewHolder>(),
     PlayerStateCallback {
 
 	var videoClickListener: OnItemClickListener? = null
@@ -51,7 +53,9 @@ class VideoAdapter(
 		)
 	}
 
-	inner class ViewHolder constructor(private val binding: ListItemVideoBinding) : RecyclerView.ViewHolder(binding.root) {
+	inner class ViewHolder constructor(private val binding: ListItemVideoBinding) : RecyclerView.ViewHolder(
+		binding.root
+	) {
 
 		fun bind(video: Video) {
 			binding.root.setOnClickListener {

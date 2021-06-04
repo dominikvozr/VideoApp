@@ -9,28 +9,33 @@ import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.View
 import androidx.databinding.BindingAdapter
-import com.likerik.videoApp.domain.NewStoriesVideo
-import com.likerik.videoApp.utils.PlayerStateCallback
-import com.likerik.videoApp.views.StoriesPlayerView
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector.ParametersBuilder
+import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultAllocator
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.upstream.cache.CacheDataSource
+import com.likerik.videoApp.domain.NewStoriesVideo
+import com.likerik.videoApp.utils.PlayerStateCallback
+import com.likerik.videoApp.views.StoriesPlayerView
 import com.uxcam.UXCam.logEvent
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
+import kotlin.math.log
 
 
 class StoriesPlayerViewAdapter {
 	companion object {
 		var playlist : NewStoriesVideo? = null
-		private var hlsPlayer : SimpleExoPlayer? = null
+		var hlsPlayer : SimpleExoPlayer? = null
 		private lateinit var cacheDataSourceFactory : CacheDataSource.Factory
 
 		// for hold all players generated
@@ -42,6 +47,8 @@ class StoriesPlayerViewAdapter {
 
 		var currentvolume: Float = currentPlayingVideo?.second?.volume ?: 0f
 
+		var playerStateCallback: PlayerStateCallback? = null
+
 		fun releaseAllPlayers(){
 			playersMap.map {
 				it.value.release()
@@ -51,7 +58,6 @@ class StoriesPlayerViewAdapter {
 		fun releasePlayer(index: Int){
 			playersMap[index]?.release()
 			playersReleased[index] = true
-			//Log.i("STORIES", playersReleased.toString())
 		}
 
 		fun toggleSound(){
@@ -86,21 +92,29 @@ class StoriesPlayerViewAdapter {
 		@JvmStatic
 		@BindingAdapter(value = ["video_url", "on_state_change", "item_index"], requireAll = true)
 		fun StoriesPlayerView.loadVideo(
-			playlist: NewStoriesVideo,
-			callback: PlayerStateCallback,
-			item_index: Int? = null
+				playlist: NewStoriesVideo,
+				callback: PlayerStateCallback,
+				item_index: Int? = null
 		) {
+			playerStateCallback = callback
+
 			Companion.playlist = playlist
 			createCacheDataSourceFactory(context)
 			initPlayer(context)
 
-			this.playlist = playlist
+			val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(DownloadUtil.getHttpDataSourceFactory()!!)
+					.setAllowChunklessPreparation(true)
+					.createMediaSource(MediaItem.fromUri(playlist.m3u8))
+
 
 			/*val mediaSource: ProgressiveMediaSource =
 				ProgressiveMediaSource.Factory(cacheDataSourceFactory)
 					.createMediaSource(MediaItem.fromUri(playlist.link))
 			hlsPlayer!!.setMediaSource(mediaSource)*/
-			hlsPlayer!!.setMediaItem(MediaItem.fromUri(playlist.link_480p_tinyfied))
+			//hlsPlayer!!.setMediaItem(MediaItem.fromUri(playlist.link_480p_tinyfied))
+
+			this.playlist = playlist
+			hlsPlayer!!.setMediaSource(hlsMediaSource)
 			hlsPlayer!!.prepare()
 
 			hlsPlayer!!.playWhenReady = false
@@ -108,8 +122,10 @@ class StoriesPlayerViewAdapter {
 				hlsPlayer!!.volume = it.volume
 			}
 			binding.playerView.player = hlsPlayer
-			binding.playerView.setKeepContentOnPlayerReset(true)
+			binding.playerView.useArtwork = true
+			//binding.playerView.defaultArtwork = Drawable.createFromPath(playlist.link_screenshot)
 			binding.playerView.useController = false
+			binding.playerView.setKeepContentOnPlayerReset(true)
 
 			if (playersMap.containsKey(item_index)) {
 				//playersMap[item_index]?.release()
@@ -138,9 +154,12 @@ class StoriesPlayerViewAdapter {
 
 				override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
 
+					Log.i("TURBOTAG", hlsPlayer!!.videoFormat.toString())
+
 					if (playbackState == Player.STATE_BUFFERING) {
 						callback.onVideoBuffering(hlsPlayer!!)
 						binding.progressBar.visibility = View.VISIBLE
+						//Log.i("TURBOTAG", hlsPlayer!!.currentTrackSelections.toString())
 						logEvent("Buffering")
 					}
 					if (playbackState == Player.STATE_READY) {
@@ -163,13 +182,15 @@ class StoriesPlayerViewAdapter {
 		}
 
 		private fun createCacheDataSourceFactory(context: Context){
-			cacheDataSourceFactory = DemoUtil.getDownloadCache(context)?.let {
+			cacheDataSourceFactory = DownloadUtil.getDownloadCache(context)?.let {
 				CacheDataSource.Factory()
 					.setCache(it)
 					.setUpstreamDataSourceFactory(
-						DemoUtil.getHttpDataSourceFactory()
+							DownloadUtil.getHttpDataSourceFactory()
 					)//.setCacheWriteDataSinkFactory(null) // Disable writing.
 			}!!
+
+
 		}
 
 		@Throws(IOException::class)
@@ -197,7 +218,7 @@ class StoriesPlayerViewAdapter {
 			val trackSelector = DefaultTrackSelector(trackSelectionFactory)
 
 			val trackSelectorParameters = ParametersBuilder().build()
-			trackSelector.setParameters(trackSelectorParameters)
+			trackSelector.parameters = trackSelectorParameters
 
 			val bandwidthMeter = DefaultBandwidthMeter.Builder(context)
 				.setInitialBitrateEstimate(10)
@@ -206,21 +227,21 @@ class StoriesPlayerViewAdapter {
 			val loadControl: LoadControl = DefaultLoadControl.Builder()
 				.setAllocator(DefaultAllocator(true, 16))
 				.setBufferDurationsMs(
-					VideoPlayerConfig.MIN_BUFFER_DURATION,
-					VideoPlayerConfig.MAX_BUFFER_DURATION,
-					VideoPlayerConfig.MIN_PLAYBACK_START_BUFFER,
-					VideoPlayerConfig.MIN_PLAYBACK_RESUME_BUFFER
+						VideoPlayerConfig.MIN_BUFFER_DURATION,
+						VideoPlayerConfig.MAX_BUFFER_DURATION,
+						VideoPlayerConfig.MIN_PLAYBACK_START_BUFFER,
+						VideoPlayerConfig.MIN_PLAYBACK_RESUME_BUFFER
 				)
 				.setTargetBufferBytes(-1)
 				.setPrioritizeTimeOverSizeThresholds(true).createDefaultLoadControl()
 
 			//experimental_setMediaCodecOperationMode()
-			val renderersFactory = DefaultRenderersFactory(context)
+			//val renderersFactory = DefaultRenderersFactory(context)
 				//.experimentalSetForceAsyncQueueingSynchronizationWorkaround(true)
 				//.experimentalSetAsynchronousBufferQueueingEnabled(true)
 				//.experimentalSetSynchronizeCodecInteractionsWithQueueingEnabled(true)
 
-			hlsPlayer = SimpleExoPlayer.Builder(context/*, renderersFactory*/)
+			hlsPlayer = SimpleExoPlayer.Builder(context)
 				.setLoadControl(loadControl)
 				.setTrackSelector(trackSelector)
 				.setBandwidthMeter(bandwidthMeter)
@@ -248,7 +269,7 @@ class StoriesPlayerViewAdapter {
 	}
 }
 // PRED PARAMS
-object VideoPlayerConfig {
+/*object VideoPlayerConfig {
 	//Minimum Video you want to buffer while Playing
 	const val MIN_BUFFER_DURATION = 2000
 
@@ -260,10 +281,10 @@ object VideoPlayerConfig {
 
 	//Min video You want to buffer when user resumes video
 	const val MIN_PLAYBACK_RESUME_BUFFER = 2000
-}
+}*/
 
 // PO PARAMS
-/*object VideoPlayerConfig {
+object VideoPlayerConfig {
 	//Minimum Video you want to buffer while Playing
 	const val MIN_BUFFER_DURATION = 1000
 
@@ -275,4 +296,4 @@ object VideoPlayerConfig {
 
 	//Min video You want to buffer when user resumes video
 	const val MIN_PLAYBACK_RESUME_BUFFER = 1000
-}*/
+}

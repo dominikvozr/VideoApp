@@ -24,21 +24,4 @@
 		app:video_url="@{video.uri}"
 		app:on_state_change="@{callback}"
 		app:item_index="@{index}" />
-
-	<!--<FrameLayout
-		android:id="@+id/root"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:keepScreenOn="true">-->
-
-		<!--<com.google.android.exoplayer2.ui.PlayerView
-			android:id="@+id/player_view"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			app:video_url="@{video.uri}"
-			app:on_state_change="@{callback}"
-			app:item_index="@{index}"
-			/>-->
-
-	<!--</FrameLayout>-->
 </layout>

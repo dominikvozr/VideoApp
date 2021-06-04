@@ -16,9 +16,9 @@ import java.io.File
 import java.io.IOException
 import java.util.concurrent.Executors
 
-object DemoUtil {
+object DownloadUtil {
 	const val DOWNLOAD_NOTIFICATION_CHANNEL_ID = "download_channel"
-	private const val TAG = "DemoUtil"
+	private const val TAG = "DownloadUtil"
 	private const val DOWNLOAD_ACTION_FILE = "actions"
 	private const val DOWNLOAD_TRACKER_ACTION_FILE = "tracked_actions"
 	private const val DOWNLOAD_CONTENT_DIRECTORY = "downloads"
@@ -33,9 +33,7 @@ object DemoUtil {
 
 	@Synchronized
 	fun getHttpDataSourceFactory(): HttpDataSource.Factory? {
-		if (httpDataSourceFactory == null) {
-			httpDataSourceFactory = DefaultHttpDataSourceFactory()
-		}
+		if (httpDataSourceFactory == null) httpDataSourceFactory = DefaultHttpDataSourceFactory()
 		return httpDataSourceFactory
 	}
 

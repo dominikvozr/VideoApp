@@ -85,23 +85,6 @@ class StoriesAdapter(
 	override fun onFinishedPlaying(player: Player, item_index: Int) {
 		var indx = item_index + 1
 		if (indx + 1 <= this.videos.size) {
-			/*AuthUser.dominik.accessToken?.let {
-				NetworkApi.Api.service.getStories("Bearer $it").enqueue(object :
-					Callback<MutableList<NewStoriesVideo>> {
-					override fun onResponse(
-						call: Call<MutableList<NewStoriesVideo>>,
-						response: Response<MutableList<NewStoriesVideo>>
-					) {
-						Log.i("StoriesFetch", response.message())
-						updateList(this@StoriesAdapter.videos)
-						this@StoriesAdapter.recyclerView.scrollToPosition(item_index + 1)
-					}
-
-					override fun onFailure(call: Call<MutableList<NewStoriesVideo>>, t: Throwable) {
-						Log.i("StoriesFetch", t.message.toString())
-					}
-				})
-			}*/
 			this.recyclerView.smoothScrollToPosition(item_index + 1)
 		}
 	}

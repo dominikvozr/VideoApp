@@ -21,20 +21,18 @@ class StoriesViewModel : ViewModel() {
 	}
 
 	fun getStories() {
-			NetworkApi.Api.service.getStories().enqueue(object : Callback<MutableList<NewStoriesVideo>> {
-				override fun onResponse(
-					call: Call<MutableList<NewStoriesVideo>>,
-					response: Response<MutableList<NewStoriesVideo>>
-				) {
-					Log.i("StoriesFetch", response.message())
-					_newStoriesVideo.value = response.body()
-				}
+		NetworkApi.Api.service.getStories().enqueue(object : Callback<MutableList<NewStoriesVideo>> {
+			override fun onResponse(
+				call: Call<MutableList<NewStoriesVideo>>,
+				response: Response<MutableList<NewStoriesVideo>>
+			) {
+				Log.i("StoriesFetch", response.message())
+				_newStoriesVideo.value = response.body()
+			}
 
-				override fun onFailure(call: Call<MutableList<NewStoriesVideo>>, t: Throwable) {
-					Log.i("StoriesFetch", t.message.toString())
-				}
-			})
-		/*AuthUser.dominik.accessToken?.let {
-		}*/
+			override fun onFailure(call: Call<MutableList<NewStoriesVideo>>, t: Throwable) {
+				Log.i("StoriesFetch", t.message.toString())
+			}
+		})
 	}
 }

@@ -42,6 +42,7 @@ data class NewStoriesVideo (
 	val link 	           : String,
 	val link_480p          : String,
 	val link_480p_tinyfied : String,
+	val m3u8               : String,
 )
 
 interface VideoBuilder {
