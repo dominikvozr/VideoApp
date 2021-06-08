@@ -14,7 +14,7 @@ class PlayerViewAdapter {
 
 	companion object {
 		private var playersMap    : MutableMap<Int, SimpleExoPlayer> = mutableMapOf()
-		private var playersInfo   : MutableMap<Int, Pair< Boolean, Pair< Uri, PlayerStateCallback >>> = mutableMapOf()
+		private var playersInfo   : MutableMap<Int, Pair<Boolean, Pair<Uri, PlayerStateCallback>>> = mutableMapOf()
 		var currentPlayingVideo   : Pair<Int, SimpleExoPlayer>? = null
 		private var currentvolume : Float = currentPlayingVideo?.second?.volume ?: 0f
 
@@ -65,12 +65,23 @@ class PlayerViewAdapter {
 		@JvmStatic
 		@BindingAdapter(value = ["video_url", "on_state_change", "item_index"], requireAll = true)
 		fun VideoAppPlayerView.loadVideo(
-			uri: Uri,
-			callback: PlayerStateCallback,
-			item_index: Int? = null
+				uri: Uri,
+				callback: PlayerStateCallback,
+				item_index: Int? = null
 		) {
 
-			val newPlayer = SimpleExoPlayer.Builder(context).build()
+			//val renderersFactory: DefaultRenderersFactory
+
+			val loadControl = DefaultLoadControl.Builder().setBufferDurationsMs(2000, 5000, 500, 500).createDefaultLoadControl()
+
+			//@ExtensionRendererMode val extensionRendererMode = DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER
+
+			//renderersFactory = DefaultRenderersFactory(this).setExtensionRendererMode(extensionRendererMode)
+
+			val newPlayer = SimpleExoPlayer.Builder(context)
+					//.setTrackSelector(trackSelector)
+					.setLoadControl(loadControl)
+					.build()
 
 			newPlayer.setMediaItem(MediaItem.fromUri(uri))
 			newPlayer.prepare()
@@ -101,9 +112,9 @@ class PlayerViewAdapter {
 						callback.onVideoBuffering(newPlayer)
 						binding.progressBar.visibility = View.VISIBLE
 						//if (item_index == 0) {
-							//loadVideo(uri, callback, item_index)
-							//newPlayer.seekTo(state.toLong())
-							//newPlayer.playWhenReady = true
+						//loadVideo(uri, callback, item_index)
+						//newPlayer.seekTo(state.toLong())
+						//newPlayer.playWhenReady = true
 						//}
 					}
 

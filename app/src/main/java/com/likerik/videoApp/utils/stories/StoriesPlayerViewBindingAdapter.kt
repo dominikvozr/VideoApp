@@ -235,12 +235,6 @@ class StoriesPlayerViewAdapter {
 				.setTargetBufferBytes(-1)
 				.setPrioritizeTimeOverSizeThresholds(true).createDefaultLoadControl()
 
-			//experimental_setMediaCodecOperationMode()
-			//val renderersFactory = DefaultRenderersFactory(context)
-				//.experimentalSetForceAsyncQueueingSynchronizationWorkaround(true)
-				//.experimentalSetAsynchronousBufferQueueingEnabled(true)
-				//.experimentalSetSynchronizeCodecInteractionsWithQueueingEnabled(true)
-
 			hlsPlayer = SimpleExoPlayer.Builder(context)
 				.setLoadControl(loadControl)
 				.setTrackSelector(trackSelector)
@@ -249,21 +243,6 @@ class StoriesPlayerViewAdapter {
 					DefaultMediaSourceFactory(cacheDataSourceFactory)
 				)
 				.build()
-
-
-			/*hlsPlayer = SimpleExoPlayer.Builder(
-				context,
-				DefaultRenderersFactory(context)
-
-			).setLoadControl(
-				DefaultLoadControl.Builder()
-					.setPrioritizeTimeOverSizeThresholds(false)
-					.createDefaultLoadControl()
-			)
-			*//*.setMediaSourceFactory(
-				DefaultMediaSourceFactory(cacheDataSourceFactory)
-			)*//*
-				.build()*/
 		}
 
 	}
